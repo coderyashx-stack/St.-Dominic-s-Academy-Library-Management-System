@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import type { Chat } from '@google/genai';
 import { ChatBubbleIcon } from '../icons/ChatBubbleIcon';
 import { XMarkIcon } from '../icons/XMarkIcon';
 import { PaperAirplaneIcon } from '../icons/PaperAirplaneIcon';
@@ -43,46 +44,45 @@ const Chatbot: React.FC = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const aiRef = useRef<any | null>(null);
+  const chatRef = useRef<Chat | null>(null);
+
+  useEffect(() => {
+    if (isOpen && !chatRef.current) {
+      const initializeChat = async () => {
+        try {
+          const { GoogleGenAI } = await import('@google/genai');
+          const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+          chatRef.current = ai.chats.create({
+              model: 'gemini-2.5-flash',
+              config: { systemInstruction },
+          });
+        } catch (error) {
+            console.error("Failed to initialize Gemini AI:", error);
+            setMessages([{ role: 'model', text: 'Sorry, the chat service is currently unavailable.' }]);
+        }
+      };
+      initializeChat();
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
-  const getAiInstance = async () => {
-    if (!aiRef.current) {
-      const { GoogleGenAI } = await import('@google/genai');
-      aiRef.current = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
-    }
-    return aiRef.current;
-  };
-
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    if (!input.trim() || isLoading || !chatRef.current) return;
 
     const userMessage: Message = { role: 'user', text: input };
-    const newMessages = [...messages, userMessage];
-    setMessages(newMessages);
+    setMessages(prev => [...prev, userMessage]);
+    const currentInput = input;
     setInput('');
     setIsLoading(true);
 
-    const apiHistory = newMessages.map(msg => ({
-        role: msg.role,
-        parts: [{ text: msg.text }]
-    }));
-
     try {
-        const ai = await getAiInstance();
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: apiHistory,
-            config: { systemInstruction },
-        });
-
-        const botMessage: Message = { role: 'model', text: response.text };
-        setMessages(prev => [...prev, botMessage]);
-
+      const response = await chatRef.current.sendMessage({ message: currentInput });
+      const botMessage: Message = { role: 'model', text: response.text };
+      setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       console.error('Error sending message to Gemini:', error);
       const errorMessage: Message = { role: 'model', text: 'Sorry, I encountered an error. Please try again.' };
@@ -134,7 +134,7 @@ const Chatbot: React.FC = () => {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask about the library..."
             className="w-full pl-4 pr-12 py-3 border border-slate-300 dark:border-slate-600 rounded-full bg-slate-50 dark:bg-slate-700 focus:ring-2 focus:ring-navy-500 focus:outline-none"
-            disabled={isLoading}
+            disabled={isLoading || !chatRef.current}
           />
           <button type="submit" disabled={isLoading || !input.trim()} className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-navy-600 text-white hover:bg-navy-700 disabled:bg-slate-400 disabled:cursor-not-allowed">
             <PaperAirplaneIcon className="h-5 w-5" />

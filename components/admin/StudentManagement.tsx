@@ -1,16 +1,33 @@
-
 import React from 'react';
 import { useLibrary } from '../../context/LibraryContext';
 import { User, UserRole } from '../../types';
+import { DownloadIcon } from '../icons/DownloadIcon';
+import { exportToCsv } from '../../utils/export';
 
 const StudentManagement: React.FC = () => {
   const { users } = useLibrary();
 
   const students = users.filter(user => user.role === UserRole.Student);
 
+  const handleExport = () => {
+    const headers = ['ID', 'Name', 'Email'];
+    const rows = students.map(student => [
+        student.id,
+        student.name,
+        student.email,
+    ]);
+    exportToCsv('students_export.csv', [headers, ...rows]);
+  };
+
   return (
     <div>
-      <h1 className="text-4xl font-extrabold mb-8 text-slate-900 dark:text-white">Student Management</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-4xl font-extrabold mb-8 text-slate-900 dark:text-white">Student Management</h1>
+        <button onClick={handleExport} className="flex items-center px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700">
+            <DownloadIcon className="h-5 w-5 mr-2"/>
+            Export CSV
+        </button>
+      </div>
       
       <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-md overflow-x-auto">
         <table className="w-full text-left">

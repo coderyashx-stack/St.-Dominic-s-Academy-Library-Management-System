@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from '../shared/Header';
 import BookCatalog from './BookCatalog';
 import MyBooks from './MyBooks';
+import Recommendations from './Recommendations';
 import { useLibrary } from '../../context/LibraryContext';
 
 type StudentView = 'dashboard' | 'catalog' | 'mybooks';
@@ -17,17 +18,20 @@ const FeatureCard: React.FC<{ icon: string; title: string; description: string, 
 const StudentDashboard: React.FC<{ setView: (view: StudentView) => void }> = ({ setView }) => {
     const { currentUser } = useLibrary();
     return (
-        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-8">
-            <div className="text-center mb-8">
-                <h2 className="text-4xl font-bold text-slate-800 dark:text-white">Welcome, {currentUser?.name}!</h2>
-                <p className="text-slate-500 dark:text-slate-400 mt-2 text-lg">Explore and borrow books from the library</p>
+        <div>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-8">
+                <div className="text-center mb-8">
+                    <h2 className="text-4xl font-bold text-slate-800 dark:text-white">Welcome, {currentUser?.name}!</h2>
+                    <p className="text-slate-500 dark:text-slate-400 mt-2 text-lg">Explore and borrow books from the library</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <FeatureCard icon="🔍" title="Search Books" description="Find books you want to read" onClick={() => setView('catalog')} />
+                    <FeatureCard icon="📖" title="My Books" description="View your borrowed books" onClick={() => setView('mybooks')} />
+                    <FeatureCard icon="📅" title="Due Dates" description="Check return deadlines" onClick={() => alert('Feature coming soon!')} />
+                    <FeatureCard icon="⭐" title="Favorites" description="Save your favorite books" onClick={() => alert('Feature coming soon!')} />
+                </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <FeatureCard icon="🔍" title="Search Books" description="Find books you want to read" onClick={() => setView('catalog')} />
-                <FeatureCard icon="📖" title="My Books" description="View your borrowed books" onClick={() => setView('mybooks')} />
-                <FeatureCard icon="📅" title="Due Dates" description="Check return deadlines" onClick={() => alert('Feature coming soon!')} />
-                <FeatureCard icon="⭐" title="Favorites" description="Save your favorite books" onClick={() => alert('Feature coming soon!')} />
-            </div>
+            <Recommendations />
         </div>
     );
 };

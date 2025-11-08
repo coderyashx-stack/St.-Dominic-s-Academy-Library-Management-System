@@ -5,6 +5,8 @@ import Modal from '../shared/Modal';
 import { PlusIcon } from '../icons/PlusIcon';
 import { PencilIcon } from '../icons/PencilIcon';
 import { TrashIcon } from '../icons/TrashIcon';
+import { DownloadIcon } from '../icons/DownloadIcon';
+import { exportToCsv } from '../../utils/export';
 
 const BookForm: React.FC<{ book?: Book; onSave: (book: any) => void; onCancel: () => void }> = ({ book, onSave, onCancel }) => {
     const [formData, setFormData] = useState({
@@ -81,15 +83,35 @@ const BookManagement: React.FC = () => {
         setIsModalOpen(false);
         setEditingBook(undefined);
     };
+
+    const handleExport = () => {
+        const headers = ['ID', 'Title', 'Author', 'Category', 'Quantity', 'Available', 'Description'];
+        const rows = books.map(book => [
+            book.id,
+            book.title,
+            book.author,
+            book.category,
+            book.quantity,
+            book.available,
+            book.description.replace(/\n/g, ' '),
+        ]);
+        exportToCsv('books_export.csv', [headers, ...rows]);
+    };
     
     return (
         <div>
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-4xl font-extrabold text-slate-900 dark:text-white">Book Management</h1>
-                <button onClick={openAddModal} className="flex items-center px-4 py-2 bg-navy-600 text-white font-semibold rounded-lg shadow-md hover:bg-navy-700">
-                    <PlusIcon className="h-5 w-5 mr-2"/>
-                    Add New Book
-                </button>
+                <div className="flex items-center space-x-2">
+                    <button onClick={handleExport} className="flex items-center px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700">
+                        <DownloadIcon className="h-5 w-5 mr-2"/>
+                        Export CSV
+                    </button>
+                    <button onClick={openAddModal} className="flex items-center px-4 py-2 bg-navy-600 text-white font-semibold rounded-lg shadow-md hover:bg-navy-700">
+                        <PlusIcon className="h-5 w-5 mr-2"/>
+                        Add New Book
+                    </button>
+                </div>
             </div>
 
             <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-md overflow-x-auto">
