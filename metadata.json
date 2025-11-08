@@ -1,0 +1,5 @@
+{
+  "name": "Copy of Library Management System",
+  "description": "A comprehensive library management system for admins to manage inventory and for students to browse and borrow books. This application features distinct portals for both user roles, complete with dashboards, book catalogs, and borrowing history.",
+  "requestFramePermissions": []
+}

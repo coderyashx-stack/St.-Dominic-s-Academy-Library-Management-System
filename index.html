@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Library Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              navy: {
+                50: '#E7E9F2',
+                100: '#BCC1D9',
+                200: '#9199BF',
+                300: '#6671A6',
+                400: '#3B498C',
+                500: '#102173',
+                600: '#0D1A5C',
+                700: '#0A1445',
+                800: '#060D2E',
+                900: '#030717',
+              },
+              gold: {
+                50: '#FFFBEA',
+                100: '#FEF3C7',
+                200: '#FDE68A',
+                300: '#FCD34D',
+                400: '#FBBF24',
+                500: '#F59E0B',
+                600: '#D97706',
+                700: '#B45309',
+                800: '#92400E',
+                900: '#78350F',
+              }
+            }
+          }
+        }
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@0.20.0"
+  }
+}
+</script>
+</head>
+  <body class="bg-slate-100 dark:bg-slate-900">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
