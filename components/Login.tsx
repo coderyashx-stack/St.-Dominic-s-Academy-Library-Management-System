@@ -1,51 +1,96 @@
 import React, { useState } from 'react';
 import { useLibrary } from '../context/LibraryContext';
-import { User } from '../types';
-import { SchoolLogo } from './shared/SchoolLogo';
 
 const Login: React.FC = () => {
-  const { users, login } = useLibrary();
-  const [selectedUserId, setSelectedUserId] = useState<string>(users[0]?.id || '');
+  const { login } = useLibrary();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedUserId) {
-      login(selectedUserId);
+    setError('');
+    if (!email || !password) {
+      setError('Please fill in all fields.');
+      return;
+    }
+    const success = login(email, password);
+    if (!success) {
+      setError('Invalid email or password.');
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-100 dark:bg-slate-900">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-lg dark:bg-slate-800">
-        <SchoolLogo />
-        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="user-select" className="sr-only">Choose a user</label>
-              <select
-                id="user-select"
-                value={selectedUserId}
-                onChange={(e) => setSelectedUserId(e.target.value)}
-                className="relative block w-full px-3 py-3 text-lg border border-slate-300 placeholder-slate-500 text-slate-900 rounded-md focus:outline-none focus:ring-navy-500 focus:border-navy-500 focus:z-10 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white"
-              >
-                {users.map((user: User) => (
-                  <option key={user.id} value={user.id}>
-                    {user.name} ({user.role})
-                  </option>
-                ))}
-              </select>
-            </div>
+    <div className="min-h-screen flex items-center justify-center p-5" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+      <div className="w-full max-w-md p-10 bg-white rounded-2xl shadow-2xl space-y-6 animate-slideIn">
+        <div className="text-center">
+          <div className="text-5xl mb-2">📚</div>
+          <h1 className="text-3xl font-bold text-[#667eea]">Library Management</h1>
+          <p className="text-slate-500">Sign in to access your account</p>
+        </div>
+        
+        {error && (
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 rounded-md animate-shake">
+            <p>{error}</p>
+          </div>
+        )}
+
+        <form onSubmit={handleLogin} className="space-y-5">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:border-[#667eea] focus:ring-1 focus:ring-[#667eea] transition"
+            />
           </div>
           <div>
-            <button
-              type="submit"
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-lg font-medium rounded-md text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy-500"
-            >
-              Sign in
-            </button>
+            <label htmlFor="password"className="block text-sm font-medium text-slate-700 mb-2">Password</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:border-[#667eea] focus:ring-1 focus:ring-[#667eea] transition"
+            />
           </div>
+          <button
+            type="submit"
+            className="w-full py-3.5 text-white font-semibold rounded-lg text-lg transition-all duration-300 ease-in-out hover:shadow-lg hover:-translate-y-1"
+            style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
+          >
+            Sign In
+          </button>
         </form>
+        <div className="text-center text-sm">
+          <a href="#" onClick={(e) => { e.preventDefault(); alert('Please contact your administrator to reset your password.'); }} className="font-medium text-[#667eea] hover:underline">
+            Forgot Password?
+          </a>
+        </div>
       </div>
+      <style>{`
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slideIn { animation: slideIn 0.5s ease-out forwards; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        .animate-shake { animation: shake 0.4s; }
+      `}</style>
     </div>
   );
 };

@@ -1,11 +1,12 @@
-
 import { Book, User, BorrowRecord, UserRole, BorrowStatus } from '../types';
 
 export const mockUsers: User[] = [
-  { id: 'user-1', name: 'Admin User', email: 'admin@library.com', role: UserRole.Admin },
-  { id: 'user-2', name: 'Alice Smith', email: 'alice@school.com', role: UserRole.Student },
-  { id: 'user-3', name: 'Bob Johnson', email: 'bob@school.com', role: UserRole.Student },
-  { id: 'user-4', name: 'Charlie Brown', email: 'charlie@school.com', role: UserRole.Student },
+  { id: 'user-1', name: 'Admin User', email: 'admin@library.com', role: UserRole.Admin, password: '6156' },
+  { id: 'user-2', name: 'Alice Smith', email: 'alice@school.com', role: UserRole.Student, password: '1031' },
+  { id: 'user-3', name: 'Bob Johnson', email: 'bob@school.com', role: UserRole.Student, password: '1031' },
+  { id: 'user-4', name: 'Charlie Brown', email: 'charlie@school.com', role: UserRole.Student, password: '1031' },
+  { id: 'user-5', name: 'Librarian User', email: 'librarian@library.com', role: UserRole.Librarian, password: 'lib123' },
+  { id: 'user-6', name: 'Teacher User', email: 'teacher@school.com', role: UserRole.Teacher, password: '1234' },
 ];
 
 export const mockBooks: Book[] = [

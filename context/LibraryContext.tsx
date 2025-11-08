@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 import { Book, User, BorrowRecord, BorrowStatus } from '../types';
 import { mockBooks, mockUsers, mockBorrowRecords } from '../data/mockData';
@@ -8,7 +7,7 @@ interface LibraryContextType {
   users: User[];
   borrowRecords: BorrowRecord[];
   currentUser: User | null;
-  login: (userId: string) => void;
+  login: (email: string, password: string) => boolean;
   logout: () => void;
   borrowBook: (bookId: string) => void;
   returnBook: (recordId: string) => void;
@@ -26,11 +25,13 @@ export const LibraryProvider: React.FC<{ children: ReactNode }> = ({ children })
   const [borrowRecords, setBorrowRecords] = useState<BorrowRecord[]>(mockBorrowRecords);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  const login = useCallback((userId: string) => {
-    const user = users.find(u => u.id === userId);
+  const login = useCallback((email: string, password: string): boolean => {
+    const user = users.find(u => u.email === email && u.password === password);
     if (user) {
       setCurrentUser(user);
+      return true;
     }
+    return false;
   }, [users]);
 
   const logout = useCallback(() => {

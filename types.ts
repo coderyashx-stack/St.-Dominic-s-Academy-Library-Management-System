@@ -1,7 +1,8 @@
-
 export enum UserRole {
   Admin = 'ADMIN',
   Student = 'STUDENT',
+  Librarian = 'LIBRARIAN',
+  Teacher = 'TEACHER',
 }
 
 export interface User {
@@ -9,6 +10,7 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
+  password?: string;
 }
 
 export interface Book {

@@ -3,6 +3,8 @@ import { LibraryProvider, useLibrary } from './context/LibraryContext';
 import Login from './components/Login';
 import StudentPortal from './components/student/StudentPortal';
 import AdminPortal from './components/admin/AdminPortal';
+import LibrarianPortal from './components/librarian/LibrarianPortal';
+import TeacherPortal from './components/teacher/TeacherPortal';
 import { UserRole } from './types';
 import Chatbot from './components/chatbot/Chatbot';
 
@@ -14,15 +16,18 @@ const AppContent: React.FC = () => {
   }
 
   const renderPortal = () => {
-    if (currentUser.role === UserRole.Student) {
-      return <StudentPortal />;
+    switch (currentUser.role) {
+      case UserRole.Student:
+        return <StudentPortal />;
+      case UserRole.Admin:
+        return <AdminPortal />;
+      case UserRole.Librarian:
+        return <LibrarianPortal />;
+      case UserRole.Teacher:
+        return <TeacherPortal />;
+      default:
+        return <div>Error: Unknown user role.</div>;
     }
-  
-    if (currentUser.role === UserRole.Admin) {
-      return <AdminPortal />;
-    }
-  
-    return <div>Error: Unknown user role.</div>;
   }
 
   return (
@@ -36,7 +41,7 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <LibraryProvider>
-      <div className="min-h-screen bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200">
+      <div className="text-slate-800 dark:text-slate-200">
         <AppContent />
       </div>
     </LibraryProvider>
